@@ -42,20 +42,25 @@ return [
         'route' => ['admin.quotes.create', 'admin.quotes.store'],
         'sort'  => 1,
     ], [
+        'key'   => 'quotes.view',
+        'name'  => 'admin::app.acl.view',
+        'route' => ['admin.quotes.view', 'admin.quotes.store'],
+        'sort'  => 2,
+    ], [
         'key'   => 'quotes.edit',
         'name'  => 'admin::app.acl.edit',
         'route' => ['admin.quotes.edit', 'admin.quotes.update'],
-        'sort'  => 2,
+        'sort'  => 3,
     ], [
         'key'   => 'quotes.print',
         'name'  => 'admin::app.acl.print',
         'route' => 'admin.quotes.print',
-        'sort'  => 3,
+        'sort'  => 4,
     ], [
         'key'   => 'quotes.delete',
         'name'  => 'admin::app.acl.delete',
         'route' => ['admin.quotes.delete', 'admin.quotes.mass_delete'],
-        'sort'  => 4,
+        'sort'  => 5,
     ], [
         'key'   => 'mail',
         'name'  => 'admin::app.acl.mail',
