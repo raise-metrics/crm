@@ -1,0 +1,11 @@
+services:
+  raise_crm_db:
+    image: mariadb
+    container_name: raise_crm_db
+    environment:
+        - MARIADB_ROOT_PASSWORD=raise_crm_pass
+        - MARIADB_DATABASE=raise_crm_db
+        - MARIADB_USER=raise_crm_user
+        - MARIADB_PASSWORD=raise_crm_pass
+    ports:
+        - "3306:3306"
