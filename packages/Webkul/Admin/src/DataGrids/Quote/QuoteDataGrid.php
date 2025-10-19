@@ -35,9 +35,9 @@ class QuoteDataGrid extends DataGrid
             ->leftJoin('users', 'quotes.user_id', '=', 'users.id')
             ->leftJoin('persons', 'quotes.person_id', '=', 'persons.id');
 
-        if ($userIds = bouncer()->getAuthorizedUserIds()) {
-            $queryBuilder->whereIn('quotes.user_id', $userIds);
-        }
+        // if ($userIds = bouncer()->getAuthorizedUserIds()) {
+        //     $queryBuilder->whereIn('quotes.user_id', $userIds);
+        // }
 
         $this->addFilter('id', 'quotes.id');
         $this->addFilter('user', 'quotes.user_id');
@@ -123,23 +123,23 @@ class QuoteDataGrid extends DataGrid
             'closure'    => fn ($row) => core()->formatBasePrice($row->discount_amount, 2),
         ]);
 
-        $this->addColumn([
-            'index'      => 'tax_amount',
-            'label'      => trans('admin::app.quotes.index.datagrid.tax'),
-            'type'       => 'string',
-            'filterable' => true,
-            'sortable'   => true,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->tax_amount, 2),
-        ]);
+        // $this->addColumn([
+        //     'index'      => 'tax_amount',
+        //     'label'      => trans('admin::app.quotes.index.datagrid.tax'),
+        //     'type'       => 'string',
+        //     'filterable' => true,
+        //     'sortable'   => true,
+        //     'closure'    => fn ($row) => core()->formatBasePrice($row->tax_amount, 2),
+        // ]);
 
-        $this->addColumn([
-            'index'      => 'adjustment_amount',
-            'label'      => trans('admin::app.quotes.index.datagrid.adjustment'),
-            'type'       => 'string',
-            'sortable'   => true,
-            'filterable' => false,
-            'closure'    => fn ($row) => core()->formatBasePrice($row->adjustment_amount, 2),
-        ]);
+        // $this->addColumn([
+        //     'index'      => 'adjustment_amount',
+        //     'label'      => trans('admin::app.quotes.index.datagrid.adjustment'),
+        //     'type'       => 'string',
+        //     'sortable'   => true,
+        //     'filterable' => false,
+        //     'closure'    => fn ($row) => core()->formatBasePrice($row->adjustment_amount, 2),
+        // ]);
 
         $this->addColumn([
             'index'      => 'grand_total',
