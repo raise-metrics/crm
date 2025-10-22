@@ -2,16 +2,17 @@
 
 namespace Webkul\Admin\Providers;
 
-use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Foundation\AliasLoader;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Admin\Exceptions\Handler;
-use Webkul\Admin\Http\Middleware\Bouncer as BouncerMiddleware;
+use Webkul\Admin\Http\Middleware\SanitizeUrl;
 use Webkul\Admin\Http\Middleware\Locale;
+use Webkul\Admin\Http\Middleware\Bouncer as BouncerMiddleware;
 
 class AdminServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,8 @@ class AdminServiceProvider extends ServiceProvider
         $router->aliasMiddleware('user', BouncerMiddleware::class);
 
         $router->aliasMiddleware('admin_locale', Locale::class);
+
+        $router->aliasMiddleware('sanitize_url', SanitizeUrl::class);
 
         include __DIR__.'/../Http/helpers.php';
 
