@@ -2031,6 +2031,11 @@ return [
     'dashboard' => [
         'index' => [
             'title'   => 'Início',
+
+            // TODO: Needs translation
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            
             'revenue' => [
                 'lost-revenue' => 'Negócios Perdidos',
                 'won-revenue'  => 'Negócios Ganhos',

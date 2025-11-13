@@ -2031,6 +2031,11 @@ return [
     'dashboard' => [
         'index' => [
             'title'   => 'Tablero',
+            
+            // TODO: Needs translation
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+
             'revenue' => [
                 'lost-revenue' => 'Ingresos Perdidos',
                 'won-revenue'  => 'Ingresos Ganados',

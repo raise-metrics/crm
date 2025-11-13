@@ -2029,6 +2029,11 @@ return [
     'dashboard' => [
         'index' => [
             'title'   => 'داشبورد',
+
+            // TODO: Needs translation
+            'start-date' => 'Start Date',
+            'end-date'   => 'End Date',
+            
             'revenue' => [
                 'lost-revenue' => 'درآمد از دست رفته',
                 'won-revenue'  => 'درآمد برنده',
