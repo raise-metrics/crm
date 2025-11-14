@@ -2028,13 +2028,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'داشبورد',
-
-            // TODO: Needs translation
+            'title'      => 'داشبورد',
             'start-date' => 'Start Date',
             'end-date'   => 'End Date',
-            
-            'revenue' => [
+            'revenue'    => [
                 'lost-revenue' => 'درآمد از دست رفته',
                 'won-revenue'  => 'درآمد برنده',
             ],

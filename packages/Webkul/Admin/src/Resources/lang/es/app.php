@@ -2030,13 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Tablero',
-            
-            // TODO: Needs translation
+            'title'      => 'Tablero',
             'start-date' => 'Start Date',
             'end-date'   => 'End Date',
-
-            'revenue' => [
+            'revenue'    => [
                 'lost-revenue' => 'Ingresos Perdidos',
                 'won-revenue'  => 'Ingresos Ganados',
             ],

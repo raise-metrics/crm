@@ -2030,13 +2030,10 @@ return [
     ],
     'dashboard' => [
         'index' => [
-            'title'   => 'Gösterge Paneli',
-
-            // TODO: Needs translation
+            'title'      => 'Gösterge Paneli',
             'start-date' => 'Start Date',
             'end-date'   => 'End Date',
-            
-            'revenue' => [
+            'revenue'    => [
                 'lost-revenue' => 'Kayıp Gelir',
                 'won-revenue'  => 'Kazançlı Gelir',
             ],
