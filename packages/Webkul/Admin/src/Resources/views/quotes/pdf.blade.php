@@ -34,6 +34,9 @@
                     'bold'    => 'DejaVu Sans',
                 ];
             }
+
+        $primaryColor = core()->getConfigData('general.settings.menu_color.brand_color') ?? '#0E90D9';
+
         @endphp
 
         <!-- lang supports inclusion -->
@@ -47,7 +50,7 @@
 
             body {
                 font-size: 10px;
-                color: #091341;
+                color: black;
                 font-family: "{{ $fontFamily['regular'] }}";
             }
 
@@ -60,11 +63,11 @@
             }
 
             .page-header {
-                border-bottom: 1px solid #E9EFFC;
+                border-bottom: 1px solid {{ $primaryColor }};
                 text-align: center;
                 font-size: 24px;
                 text-transform: uppercase;
-                color: #000DBB;
+                color: {{ $primaryColor }};
                 padding: 24px 0;
                 margin: 0;
             }
@@ -102,8 +105,8 @@
             }
             
             table thead th {
-                background-color: #E9EFFC;
-                color: #000DBB;
+                background-color: {{ $primaryColor }};
+                color: white;
                 padding: 6px 18px;
                 text-align: left;
             }
@@ -114,7 +117,7 @@
 
             table tbody td {
                 padding: 9px 18px;
-                border-bottom: 1px solid #E9EFFC;
+                border-bottom: 1px solid {{ $primaryColor }};
                 text-align: left;
                 vertical-align: top;
             }
@@ -133,8 +136,9 @@
                 width: 250px;
                 padding-top: 5px;
                 padding-bottom: 5px;
-                background-color: #E9EFFC;
+                background-color: {{ $primaryColor }};
                 white-space: nowrap;
+                color: white;
             }
 
             .summary table.rtl {
@@ -192,28 +196,6 @@
                             </td>
                         </tr>
 
-<!--                         <tr>
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.sales-person'): 
-                                </b>
-
-                                <span>
-                                    {{ $quote->user->name }}
-                                </span>
-                            </td>
-
-                            <td style="width: 50%; padding: 2px 18px;border:none;">
-                                <b>
-                                    @lang('admin::app.quotes.index.pdf.subject'):
-                                </b>
-
-                                <span>
-                                    {{ $quote->subject }}
-                                </span>
-                            </td>
-                        </tr>
- -->                        
                         <tr>
                             <td style="width: 50%; padding: 2px 18px;border:none;">
                                 <b>
@@ -225,15 +207,15 @@
                                 </span>
                             </td>
 
-<!--                             <td style="width: 50%; padding: 2px 18px;border:none;">
+                            <td style="width: 50%; padding: 2px 18px;border:none;">
                                 <b>
-                                    @lang('admin::app.quotes.index.pdf.sales-person'):
+                                    @lang('admin::app.quotes.index.pdf.sales-person'): 
                                 </b>
 
                                 <span>
                                     {{ $quote->user->name }}
                                 </span>
-                            </td> -->
+                            </td>
                         </tr>
 
 <!--                         <tr>

@@ -64,6 +64,8 @@ class LeadDataGrid extends DataGrid
                 'users.name as sales_person',
                 'persons.id as person_id',
                 'persons.name as person_name',
+                'persons.contact_numbers as person_contact_numbers',
+                DB::raw("JSON_UNQUOTE(JSON_EXTRACT(persons.contact_numbers, '$[0].value')) as phone"),
                 'tags.name as tag_name',
                 'lead_pipelines.rotten_days as pipeline_rotten_days',
                 'lead_pipeline_stages.code as stage_code',
@@ -212,6 +214,14 @@ class LeadDataGrid extends DataGrid
 
                 return "<a class=\"text-brandColor transition-all hover:underline\" href='".$route."'>".$row->person_name.'</a>';
             },
+        ]);
+
+        $this->addColumn([
+            'index'      => 'phone',
+            'label'      => 'Telefone',
+            'type'       => 'string',
+            'visible'    => true,
+            'exportable' => true
         ]);
 
         $this->addColumn([
