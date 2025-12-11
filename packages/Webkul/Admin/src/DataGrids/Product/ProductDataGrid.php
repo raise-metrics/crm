@@ -16,6 +16,10 @@ class ProductDataGrid extends DataGrid
     {
         $tablePrefix = DB::getTablePrefix();
 
+        if (request()->get('sort') === 'name') {
+            request()->merge(['sort' => 'product_name']);
+        }
+
         $queryBuilder = DB::table('products')
             ->leftJoin('product_inventories', 'products.id', '=', 'product_inventories.product_id')
             ->leftJoin('product_tags', 'products.id', '=', 'product_tags.product_id')
@@ -23,7 +27,7 @@ class ProductDataGrid extends DataGrid
             ->select(
                 'products.id',
                 'products.sku',
-                'products.name',
+                'products.name as product_name',
                 'products.price',
                 'tags.name as tag_name',
             )
@@ -37,6 +41,7 @@ class ProductDataGrid extends DataGrid
         }
 
         $this->addFilter('id', 'products.id');
+        $this->addFilter('product_name', 'products.name');
         $this->addFilter('total_in_stock', DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock'));
         $this->addFilter('total_allocated', DB::raw('SUM('.$tablePrefix.'product_inventories.allocated'));
         $this->addFilter('total_on_hand', DB::raw('SUM('.$tablePrefix.'product_inventories.in_stock - '.$tablePrefix.'product_inventories.allocated'));
@@ -60,7 +65,7 @@ class ProductDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'      => 'name',
+            'index'      => 'product_name',
             'label'      => trans('admin::app.products.index.datagrid.name'),
             'type'       => 'string',
             'sortable'   => true,

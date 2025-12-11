@@ -71,6 +71,10 @@ class AttributeValueRepository extends Repository
             }
 
             if ($attribute->type === 'multiselect' || $attribute->type === 'checkbox') {
+                if (is_string($data[$attribute->code])) {
+                    $data[$attribute->code] = explode(',', $data[$attribute->code]);
+                }
+
                 $data[$attribute->code] = implode(',', $data[$attribute->code]);
             }
 

@@ -151,6 +151,16 @@ class ProductController extends Controller
      */
     public function search(): JsonResource
     {
+
+        $term = trim(request('query', ''));
+
+        if ($term !== '') {
+            request()->merge([
+                'search'       => $term,
+                'searchFields' => 'name:like;sku:like',
+            ]);
+        }
+
         $products = $this->productRepository
             ->pushCriteria(app(RequestCriteria::class))
             ->orderBy('created_at', 'desc')
