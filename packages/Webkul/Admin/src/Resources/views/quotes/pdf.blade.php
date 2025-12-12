@@ -72,6 +72,16 @@
                 margin: 0;
             }
 
+            .page-header-sub-title {
+                border-bottom: 1px solid {{ $primaryColor }};
+                text-align: center;
+                font-size: 16px;
+                text-transform: uppercase;
+                color: {{ $primaryColor }};
+                padding: 24px 0;
+                margin: 0;
+            }
+
             .logo-container {
                 position: absolute;
                 top: 20px;
@@ -170,6 +180,10 @@
                 <b>@lang('admin::app.quotes.index.pdf.title')</b>
             </div>
 
+            <div class="page-header-sub-title">
+                <b>Clínica Prof. Fava Netto</b>
+            </div>
+
             <div class="page-content">
                 <!-- Invoice Information -->
                 <table class="{{ app()->getLocale   () }}">
@@ -239,7 +253,7 @@
                             @if ($quote->billing_address)
                                 <th style="width: 50%;">
                                     <b>
-                                        @lang('admin::app.quotes.index.pdf.billing-address')
+                                        Opções de parcelamento
                                     </b>
                                 </th>
                             @endif
@@ -247,7 +261,7 @@
                             @if ($quote->shipping_address)
                                 <th style="width: 50%">
                                     <b>
-                                        @lang('admin::app.quotes.index.pdf.shipping-address')
+                                        Observações
                                     </b>
                                 </th>
                             @endif

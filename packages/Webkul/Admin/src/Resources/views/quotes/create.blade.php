@@ -312,9 +312,6 @@
                                     @lang('admin::app.quotes.create.discount')
                                 </x-admin::table.th>
 
-                                <x-admin::table.th class="text-center">
-                                    @lang('admin::app.quotes.create.tax')
-                                </x-admin::table.th>
 
                                 <x-admin::table.th class="text-center">
                                     @lang('admin::app.quotes.create.total')
@@ -514,24 +511,6 @@
                             @on-change="(event) => product.discount_amount = event.value"
                             position="center"
                             ::value-label="$admin.formatPrice(product.discount_amount)"
-                        />
-                    </x-admin::form.control-group>
-                </x-admin::table.td>
-
-                <!-- Tax Amount -->
-                <x-admin::table.td class="!px-2 ltr:text-right rtl:text-left">
-                    <x-admin::form.control-group class="!mb-0">
-                        <x-admin::form.control-group.control
-                            type="inline"
-                            ::name="`${inputName}[tax_amount]`"
-                            ::value="product.tax_amount"
-                            rules="required|decimal:4"
-                            ::errors="errors"
-                            :label="trans('admin::app.quotes.create.tax-amount')"
-                            :placeholder="trans('admin::app.quotes.create.tax-amount')"
-                            @on-change="(event) => product.tax_amount = event.value"
-                            position="center"
-                            ::value-label="$admin.formatPrice(product.tax_amount)"
                         />
                     </x-admin::form.control-group>
                 </x-admin::table.td>
