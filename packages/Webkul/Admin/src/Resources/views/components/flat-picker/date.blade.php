@@ -69,7 +69,13 @@
                 activate: function(options) {
                     let element = this.$el.getElementsByTagName("input")[0];
 
+                    options.defaultDate = element.value || null;
+
                     this.datepicker = new Flatpickr(element, options);
+
+                    if (! element.value) {
+                        this.datepicker.clear();
+                    }
                 },
 
                 clear: function() {

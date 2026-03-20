@@ -55,6 +55,7 @@
             <div
                 v-if="showPopup"
                 class="absolute top-full z-10 mt-1 flex w-full origin-top transform flex-col gap-2 rounded-lg border border-gray-200 bg-white p-2 shadow-lg transition-transform dark:border-gray-900 dark:bg-gray-800"
+                :style="dropdownStyle"
             >
                 <!-- Search Bar -->
                 <div class="relative flex items-center">
@@ -69,7 +70,7 @@
                     />
 
                     <!-- Search Icon (absolute positioned) -->
-                    <span class="absolute flex items-center ltr:right-2 rtl:left-2">
+                    <span class="absolute flex items-center gap-2 ltr:right-2 rtl:left-2">
                         <!-- Loader (optional, based on condition) -->
                         <div
                             class="relative"
@@ -77,18 +78,39 @@
                         >
                             <x-admin::spinner />
                         </div>
+
+                        <span
+                            v-else-if="hasSearched"
+                            class="text-xs font-medium text-gray-500 dark:text-gray-400"
+                        >
+                            @{{ filteredResults.length }}
+                        </span>
                     </span>
                 </div>
 
                 <!-- Results List -->
-                <ul class="max-h-40 divide-y divide-gray-100 overflow-y-auto">
+                <ul
+                    class="divide-y divide-gray-100 overflow-y-auto"
+                    :style="{ maxHeight: dropdownMaxHeight }"
+                >
                     <li
                         v-for="item in filteredResults"
                         :key="item.id"
                         class="cursor-pointer px-4 py-2 text-gray-800 transition-colors hover:bg-blue-100 dark:text-white dark:hover:bg-gray-900"
                         @click="selectItem(item)"
                     >
-                        @{{ item.name }}
+                        <div class="min-w-0">
+                            <p class="truncate font-medium">
+                                @{{ item.name }}
+                            </p>
+
+                            <p
+                                v-if="item.sku"
+                                class="truncate text-xs text-gray-500 dark:text-gray-400"
+                            >
+                                SKU: @{{ item.sku }}
+                            </p>
+                        </div>
                     </li>
 
                     <template v-if="filteredResults.length === 0">
@@ -159,6 +181,21 @@
                 preload: {
                     type: Boolean,
                     default: false,
+                },
+
+                limit: {
+                    type: Number,
+                    default: 15,
+                },
+
+                dropdownStyle: {
+                    type: String,
+                    default: '',
+                },
+
+                dropdownMaxHeight: {
+                    type: String,
+                    default: '10rem',
                 }
             },
 
@@ -177,6 +214,8 @@
                     isSearching: false,
 
                     cancelToken: null,
+
+                    hasSearched: false,
                 };
             },
 
@@ -260,6 +299,8 @@
 
                         this.isSearching = false;
 
+                        this.hasSearched = false;
+
                         return;
                     }
 
@@ -274,12 +315,14 @@
                     this.$axios.get(this.src, {
                             params: {
                                 ...this.params,
-                                query: this.searchTerm
+                                query: this.searchTerm,
+                                limit: this.limit,
                             },
                             cancelToken: this.cancelToken.token,
                         })
                         .then(response => {
                             this.searchedResults = response.data.data;
+                            this.hasSearched = true;
                         })
                         .catch(error => {
                             if (! this.$axios.isCancel(error)) {
@@ -287,6 +330,8 @@
                             }
 
                             this.isSearching = false;
+
+                            this.hasSearched = false;
                         })
                         .finally(() => this.isSearching = false);
                 },

@@ -12,7 +12,10 @@
         <div class="flex flex-col gap-4">
             {!! view_render_event('admin.leads.create.products.form_controls.table.before') !!}
 
-            <div class="block w-full overflow-x-auto">
+            <div
+                class="block w-full overflow-x-auto overflow-y-visible pb-48"
+                style="min-height: 32rem;"
+            >
                 <!-- Table -->
                 <x-admin::table>
                     {!! view_render_event('admin.leads.create.products.form_controls.table.head.before') !!}
@@ -67,17 +70,6 @@
             </div>
 
             {!! view_render_event('admin.leads.create.products.form_controls.table.after') !!}
-
-            <!-- Add New Product Item -->
-            <button
-                type="button"
-                class="flex max-w-max items-center gap-2 text-brandColor"
-                @click="addProduct"
-            >
-                <i class="icon-add text-md !text-brandColor"></i>
-
-                @lang('admin::app.leads.common.products.add-more')
-            </button>
         </div>
     </script>
 
@@ -87,12 +79,15 @@
     >
         <x-admin::table.thead.tr>
             <!-- Product Name -->
-            <x-admin::table.td>
+            <x-admin::table.td class="relative overflow-visible">
                 <x-admin::form.control-group class="!mb-0">
                     <x-admin::lookup
                         ::src="src"
                         ::name="`${inputName}[name]`"
                         ::params="params"
+                        ::limit="30"
+                        dropdown-style="min-width: 38rem; width: max-content; max-width: min(90vw, 52rem);"
+                        dropdown-max-height="18rem"
                         :placeholder="trans('admin::app.leads.common.products.product-name')"
                         @on-selected="(product) => addProduct(product)"
                         ::value="{ id: product.product_id, name: product.name }"
@@ -183,6 +178,14 @@
                 return {
                     products: this.data ? this.data : [],
                 }
+            },
+
+            mounted() {
+                this.$emitter.on('lead-products:add', this.addProduct);
+            },
+
+            beforeUnmount() {
+                this.$emitter.off('lead-products:add', this.addProduct);
             },
 
             methods: {

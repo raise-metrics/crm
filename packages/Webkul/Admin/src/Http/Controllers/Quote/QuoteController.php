@@ -2,6 +2,7 @@
 
 namespace Webkul\Admin\Http\Controllers\Quote;
 
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -62,6 +63,8 @@ class QuoteController extends Controller
      */
     public function store(AttributeForm $request): RedirectResponse
     {
+        $this->validateExpiredAt($request);
+
         Event::dispatch('quote.create.before');
 
         $quote = $this->quoteRepository->create($request->all());
@@ -98,6 +101,8 @@ class QuoteController extends Controller
      */
     public function update(AttributeForm $request, int $id): RedirectResponse
     {
+        $this->validateExpiredAt($request);
+
         Event::dispatch('quote.update.before', $id);
 
         $quote = $this->quoteRepository->update($request->all(), $id);
@@ -194,5 +199,19 @@ class QuoteController extends Controller
             view('admin::quotes.pdf', compact('quote'))->render(),
             'Quote_'.$quote->subject.'_'.$quote->created_at->format('d-m-Y')
         );
+    }
+
+    /**
+     * Validate quote expiration date with server-side rules.
+     */
+    protected function validateExpiredAt(AttributeForm $request): void
+    {
+        $request->validate([
+            'expired_at' => [
+                'nullable',
+                'date_format:Y-m-d',
+                'after:'.Carbon::yesterday()->format('Y-m-d'),
+            ],
+        ]);
     }
 }

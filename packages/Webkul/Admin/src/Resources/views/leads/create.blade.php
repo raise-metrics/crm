@@ -205,14 +205,26 @@
                         class="flex flex-col gap-4"
                         id="products"
                     >
-                        <div class="flex flex-col gap-1">
-                            <p class="text-base font-semibold dark:text-white">
-                                @lang('admin::app.leads.create.products')
-                            </p>
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex flex-col gap-1">
+                                <p class="text-base font-semibold dark:text-white">
+                                    @lang('admin::app.leads.create.products')
+                                </p>
 
-                            <p class="text-gray-600 dark:text-white">
-                                @lang('admin::app.leads.create.products-info')
-                            </p>
+                                <p class="text-gray-600 dark:text-white">
+                                    @lang('admin::app.leads.create.products-info')
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="flex items-center gap-2 text-brandColor"
+                                @click="$emitter.emit('lead-products:add')"
+                            >
+                                <i class="icon-add text-md !text-brandColor"></i>
+
+                                @lang('admin::app.leads.common.products.add-more')
+                            </button>
                         </div>
 
                         <div>

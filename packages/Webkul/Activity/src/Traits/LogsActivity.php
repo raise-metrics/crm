@@ -23,9 +23,7 @@ trait LogsActivity
                     'type'    => 'system',
                     'title'   => trans('admin::app.activities.created'),
                     'is_done' => 1,
-                    'user_id' => auth()->check()
-                        ? auth()->id()
-                        : null,
+                    'user_id' => static::getActivityUserId(),
                 ]);
 
                 $model->activities()->attach($activity->id);
@@ -88,7 +86,7 @@ trait LogsActivity
                         'label' => static::getAttributeLabel($attributeData['old'], $model->attribute),
                     ],
                 ]),
-                'user_id'    => auth()->id(),
+                'user_id'    => static::getActivityUserId(),
             ]);
 
             if ($model instanceof AttributeValue) {
@@ -159,6 +157,14 @@ trait LogsActivity
         static::ksortRecursive($value);
 
         return $value;
+    }
+
+    /**
+     * Resolve the authenticated admin user ID for activity logs.
+     */
+    protected static function getActivityUserId(): ?int
+    {
+        return auth()->guard('user')->id() ?? auth()->id();
     }
 
     /**

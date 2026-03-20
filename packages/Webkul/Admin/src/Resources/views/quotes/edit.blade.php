@@ -95,6 +95,15 @@
                             <p class="text-sm text-gray-600 dark:text-white">@lang('admin::app.quotes.create.quote-info-info')</p>
                         </div>
 
+                        @php
+                            $expiredAtAttribute = app('Webkul\Attribute\Repositories\AttributeRepository')->findOneWhere([
+                                'entity_type' => 'quotes',
+                                'code'        => 'expired_at',
+                            ]);
+
+                            $expiredAtValue = old('expired_at') ?? optional($quote->expired_at)->format('Y-m-d');
+                        @endphp
+
                         <div class="w-1/2 max-md:w-full">
                             <x-admin::attributes
                                 :custom-attributes="app('Webkul\Attribute\Repositories\AttributeRepository')->findWhere([
@@ -127,10 +136,29 @@
                             />
 
                             <div class="flex gap-4">
+                                <x-admin::form.control-group class="mb-2.5 w-full">
+                                    <x-admin::form.control-group.label
+                                        for="expired_at"
+                                        :class="$expiredAtAttribute?->is_required ? 'required' : ''"
+                                    >
+                                        {{ $expiredAtAttribute?->name }}
+                                    </x-admin::form.control-group.label>
+
+                                    <input
+                                        type="date"
+                                        id="expired_at"
+                                        name="expired_at"
+                                        value="{{ $expiredAtValue }}"
+                                        class="w-full rounded border border-gray-200 px-2.5 py-2 text-sm font-normal text-gray-800 transition-all hover:border-gray-400 focus:border-gray-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-400 dark:focus:border-gray-400"
+                                    />
+
+                                    <x-admin::form.control-group.error control-name="expired_at" />
+                                </x-admin::form.control-group>
+
                                 <x-admin::attributes
                                     :custom-attributes="app('Webkul\Attribute\Repositories\AttributeRepository')->findWhere([
                                         'entity_type' => 'quotes',
-                                        ['code', 'IN', ['expired_at', 'user_id']],
+                                        ['code', 'IN', ['user_id']],
                                     ])->sortBy('sort_order')"
                                     :custom-validations="[
                                         'expired_at' => [
@@ -247,14 +275,24 @@
                         id="quote-items"
                         class="flex flex-col gap-4"
                     >
-                        <div class="flex flex-col gap-1">
-                            <p class="text-base font-semibold text-gray-800 dark:text-white">
-                                @lang('admin::app.quotes.create.quote-items')
-                            </p>
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="flex flex-col gap-1">
+                                <p class="text-base font-semibold text-gray-800 dark:text-white">
+                                    @lang('admin::app.quotes.create.quote-items')
+                                </p>
 
-                            <p class="text-sm text-gray-600 dark:text-white">
-                                @lang('admin::app.quotes.create.quote-item-info')
-                            </p>
+                                <p class="text-sm text-gray-600 dark:text-white">
+                                    @lang('admin::app.quotes.create.quote-item-info')
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="flex items-center gap-2 text-brandColor"
+                                @click="$emitter.emit('quote-items:add')"
+                            >
+                                @lang('admin::app.quotes.create.add-item')
+                            </button>
                         </div>
 
                         <!-- Quote Item List Vue Component -->
@@ -273,7 +311,10 @@
             id="v-quote-item-list-template"
         >
             <div class="flex flex-col gap-4">
-                <div class="block w-full">
+                <div
+                    class="block w-full overflow-x-auto overflow-y-visible pb-48"
+                    style="min-height: 22rem;"
+                >
                     <!-- Table -->
                     <x-admin::table>
                         <!-- Table Head -->
@@ -333,14 +374,6 @@
                         </x-admin::table.tbody>
                     </x-admin::table>
                 </div>
-
-                <!-- Add New Quote Item -->
-                <span
-                    class="text-md flex max-w-max cursor-pointer items-center gap-2 text-brandColor"
-                    @click="addProduct"
-                >
-                    @lang('admin::app.quotes.create.add-item')
-                </span>
 
                 <div class="flex justify-end">
                     <div class="grid w-[348px] gap-4 rounded-lg bg-gray-100 p-4 text-sm dark:bg-gray-950 dark:text-white">
@@ -419,13 +452,16 @@
         >
             <x-admin::table.thead.tr>
                 <!-- Quote Product Name -->
-                <x-admin::table.td>
+                <x-admin::table.td class="relative overflow-visible">
                     <x-admin::form.control-group class="!mb-0">
                         <x-admin::lookup
                             ::src="src"
                             ::name="`${inputName}[product_id]`"
                             ::params="params"
                             ::value="{ id: product.product_id, name: product.name }"
+                            ::limit="30"
+                            dropdown-style="min-width: 38rem; width: max-content; max-width: min(90vw, 52rem);"
+                            dropdown-max-height="18rem"
                             @on-selected="(product) => addProduct(product)"
                             :placeholder="trans('admin::app.quotes.edit.search-products')"
                         />
@@ -604,6 +640,14 @@
 
                         products: @json($quote->items),
                     }
+                },
+
+                mounted() {
+                    this.$emitter.on('quote-items:add', this.addProduct);
+                },
+
+                beforeUnmount() {
+                    this.$emitter.off('quote-items:add', this.addProduct);
                 },
 
                 computed: {

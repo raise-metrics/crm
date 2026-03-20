@@ -151,8 +151,8 @@ class ProductController extends Controller
      */
     public function search(): JsonResource
     {
-
         $term = trim(request('query', ''));
+        $limit = max(1, min((int) request('limit', 30), 50));
 
         if ($term !== '') {
             request()->merge([
@@ -164,7 +164,7 @@ class ProductController extends Controller
         $products = $this->productRepository
             ->pushCriteria(app(RequestCriteria::class))
             ->orderBy('created_at', 'desc')
-            ->take(15)
+            ->take($limit)
             ->get();
 
         return ProductResource::collection($products);

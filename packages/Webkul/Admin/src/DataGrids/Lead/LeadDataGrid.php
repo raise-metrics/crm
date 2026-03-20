@@ -54,7 +54,7 @@ class LeadDataGrid extends DataGrid
                 'leads.title',
                 'leads.status',
                 'leads.lead_value',
-                'leads.expected_close_date',
+                'leads.closed_at',
                 'lead_sources.name as lead_source_name',
                 'lead_types.name as lead_type_name',
                 'leads.created_at',
@@ -99,7 +99,7 @@ class LeadDataGrid extends DataGrid
         $this->addFilter('type', 'lead_pipeline_stages.code');
         $this->addFilter('stage', 'lead_pipeline_stages.id');
         $this->addFilter('tag_name', 'tags.name');
-        $this->addFilter('expected_close_date', 'leads.expected_close_date');
+        $this->addFilter('closed_at', 'leads.closed_at');
         $this->addFilter('created_at', 'leads.created_at');
         $this->addFilter('rotten_lead', DB::raw('DATEDIFF(NOW(), '.$tablePrefix.'leads.created_at) >= '.$tablePrefix.'lead_pipelines.rotten_days'));
 
@@ -260,7 +260,7 @@ class LeadDataGrid extends DataGrid
         ]);
 
         $this->addColumn([
-            'index'           => 'expected_close_date',
+            'index'           => 'closed_at',
             'label'           => trans('admin::app.leads.index.datagrid.date-to'),
             'type'            => 'date',
             'searchable'      => false,
@@ -268,11 +268,11 @@ class LeadDataGrid extends DataGrid
             'filterable'      => true,
             'filterable_type' => 'date_range',
             'closure'         => function ($row) {
-                if (! $row->expected_close_date) {
+                if (! $row->closed_at) {
                     return '--';
                 }
 
-                return $row->expected_close_date;
+                return $row->closed_at;
             },
         ]);
 

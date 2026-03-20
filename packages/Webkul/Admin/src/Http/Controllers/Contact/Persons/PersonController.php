@@ -33,6 +33,14 @@ class PersonController extends Controller
      */
     public function index()
     {
+        if (
+            request()->ajax()
+            && request()->boolean('export')
+            && ! bouncer()->hasPermission('contacts.persons.export')
+        ) {
+            abort(403);
+        }
+
         if (request()->ajax()) {
             return datagrid(PersonDataGrid::class)->process();
         }

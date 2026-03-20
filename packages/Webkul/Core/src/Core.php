@@ -169,6 +169,10 @@ class Core
      */
     public function formatDate($date, $format = 'd M Y h:iA')
     {
+        if (blank($date)) {
+            return '';
+        }
+
         return Carbon::parse($date)->format($format);
     }
 

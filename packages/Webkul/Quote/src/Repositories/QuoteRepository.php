@@ -2,6 +2,7 @@
 
 namespace Webkul\Quote\Repositories;
 
+use Carbon\Carbon;
 use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Webkul\Attribute\Repositories\AttributeRepository;
@@ -57,7 +58,7 @@ class QuoteRepository extends Repository
         $data['sales_person_id'] = auth()->id();
         $data['user_id'] = auth()->id();
 
-        $quote = parent::create($data);
+        $quote = parent::create($this->getQuoteTablePayload($data));
 
         $this->attributeValueRepository->save(array_merge($data, [
             'entity_id' => $quote->id,
@@ -83,7 +84,7 @@ class QuoteRepository extends Repository
     {
         $quote = $this->find($id);
 
-        parent::update($data, $id);
+        parent::update($this->getQuoteTablePayload($data), $id);
 
         /**
          * If attributes are provided then only save the provided attributes and return.
@@ -133,6 +134,22 @@ class QuoteRepository extends Repository
         }
 
         return $quote;
+    }
+
+    /**
+     * Normalize data before persisting quote table columns.
+     */
+    protected function getQuoteTablePayload(array $data): array
+    {
+        if (! empty($data['expired_at'])) {
+            $data['expired_at'] = Carbon::createFromFormat('Y-m-d', $data['expired_at'])
+                ->endOfDay()
+                ->format('Y-m-d H:i:s');
+        } else {
+            $data['expired_at'] = null;
+        }
+
+        return $data;
     }
 
     /**

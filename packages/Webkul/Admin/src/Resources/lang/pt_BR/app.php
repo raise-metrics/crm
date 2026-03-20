@@ -147,7 +147,7 @@ return [
             'index' => [
                 'all'                => 'Todos',
                 'bcc'                => 'Cópia oculta',
-                'by-user'            => 'Por usuário',
+                'by-user'            => 'Por :user',
                 'calls'              => 'Chamadas',
                 'cc'                 => 'Cópia',
                 'change-log'         => 'Logs de Alterações',
@@ -523,7 +523,7 @@ return [
                         'quotes'       => 'Cotações',
                         'notes'        => 'Notas',
                         'emails'       => 'E-mails',
-                        'by-user'      => 'Por usuário',
+                        'by-user'      => 'Por :user',
                         'scheduled-on' => 'Agendado em',
                         'location'     => 'Localização',
                         'participants' => 'Participantes',

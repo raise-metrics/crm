@@ -41,6 +41,12 @@
                     ::rules="getValidation"
                     ::label="attribute.name"
                     v-model="contactNumber['value']"
+                    ::placeholder="phonePlaceholder"
+                    ::maxlength="phoneMaxLength"
+                    ::inputmode="phoneInputMode"
+                    @input="handleInput(index)"
+                    @focus="handleFocus(index)"
+                    @blur="handleBlur(index)"
                     ::disabled="isDisabled"
                 />
 
@@ -99,30 +105,60 @@
                 value(newValue, oldValue) {
                     if (JSON.stringify(newValue) !== JSON.stringify(oldValue)) {
                         this.contactNumbers = newValue || [{'value': '', 'label': 'work'}];
+                        this.normalizeContactNumbers();
                     }
                 },
             },
 
             computed: {
+                isBrazilianPersonPhone() {
+                    return [
+                        'contact_numbers',
+                        'person[contact_numbers]',
+                    ].includes(this.attribute.code);
+                },
+
                 getValidation() {
-                    return {
-                        phone: true,
+                    const rules = {
                         unique_contact_number: this.contactNumbers ?? [],
                         ...(this.validations === 'required' ? { required: true } : {}),
                     };
+
+                    if (this.isBrazilianPersonPhone) {
+                        rules.brazilian_phone = true;
+
+                        return rules;
+                    }
+
+                    rules.phone = true;
+
+                    return rules;
+                },
+
+                phoneInputMode() {
+                    return this.isBrazilianPersonPhone ? 'numeric' : null;
+                },
+
+                phoneMaxLength() {
+                    return this.isBrazilianPersonPhone ? 13 : null;
+                },
+
+                phonePlaceholder() {
+                    return this.isBrazilianPersonPhone ? '5511934353030' : null;
                 },
             },
 
-            created() {
-                this.extendValidations();
+                created() {
+                    this.extendValidations();
+                    this.normalizeContactNumbers();
 
-                if (! this.contactNumbers || ! this.contactNumbers.length) {
-                    this.contactNumbers = [{
-                        'value': '',
-                        'label': 'work'
-                    }];
-                }
-            },
+                    if (! this.contactNumbers || ! this.contactNumbers.length) {
+                        this.contactNumbers = [{
+                            'value': '',
+                            'label': 'work'
+                        }];
+                    }
+                },
 
             methods: {
                 add() {
@@ -132,11 +168,78 @@
                     });
                 },
 
+                handleInput(index) {
+                    if (! this.isBrazilianPersonPhone) {
+                        return;
+                    }
+
+                    this.contactNumbers[index].value = this.normalizeBrazilianPhone(
+                        this.contactNumbers[index].value,
+                        false
+                    );
+                },
+
+                handleFocus(index) {
+                    if (! this.isBrazilianPersonPhone) {
+                        return;
+                    }
+
+                    this.contactNumbers[index].value = this.normalizeBrazilianPhone(
+                        this.contactNumbers[index].value,
+                        true
+                    );
+                },
+
+                handleBlur(index) {
+                    if (! this.isBrazilianPersonPhone) {
+                        return;
+                    }
+
+                    this.contactNumbers[index].value = this.normalizeBrazilianPhone(
+                        this.contactNumbers[index].value,
+                        false
+                    );
+                },
+
                 remove(contactNumber) {
                     this.contactNumbers = this.contactNumbers.filter(number => number !== contactNumber);
                 },
 
+                normalizeContactNumbers() {
+                    if (! this.isBrazilianPersonPhone || ! Array.isArray(this.contactNumbers)) {
+                        return;
+                    }
+
+                    this.contactNumbers = this.contactNumbers.map((contactNumber) => ({
+                        ...contactNumber,
+                        value: this.normalizeBrazilianPhone(contactNumber?.value, false),
+                    }));
+                },
+
+                normalizeBrazilianPhone(value, forcePrefix = false) {
+                    let digits = String(value ?? '').replace(/\D/g, '');
+
+                    if (! digits.length) {
+                        return forcePrefix ? '55' : '';
+                    }
+
+                    if (! digits.startsWith('55')) {
+                        digits = `55${digits}`;
+                    }
+
+                    return digits.slice(0, 13);
+                },
+
                 extendValidations() {
+                    defineRule('brazilian_phone', (value) => {
+                        if (! value || ! value.length) {
+                            return true;
+                        }
+
+                        return /^55\d{10,11}$/.test(value)
+                            || 'Este campo deve estar no formato 55 + DDD + número.';
+                    });
+
                     defineRule('unique_contact_number', async (value, contactNumbers) => {
                         if (
                             ! value

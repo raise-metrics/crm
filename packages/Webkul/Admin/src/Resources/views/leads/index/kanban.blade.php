@@ -337,6 +337,8 @@
 
                     stageLeads: {},
 
+                    stageLoadingMore: {},
+
                     isLoading: true,
 
                     tagTextColor: {
@@ -509,7 +511,7 @@
                  * @returns {void}
                  */
                 append(params) {
-                    this.get(params)
+                    return this.get(params)
                         .then(response => {
                             for (let [sortOrder, data] of Object.entries(response.data)) {
                                 if (! this.stageLeads[sortOrder]) {
@@ -662,21 +664,37 @@
                  * @returns {void}
                  */
                 handleScroll(stage, event) {
-                    const bottom = event.target.scrollHeight - event.target.scrollTop === event.target.clientHeight;
+                    const stageKey = stage.sort_order;
+                    const meta = this.stageLeads[stageKey]?.leads?.meta;
+
+                    if (! meta) {
+                        return;
+                    }
+
+                    const threshold = 24;
+                    const bottom = event.target.scrollTop + event.target.clientHeight >= event.target.scrollHeight - threshold;
 
                     if (! bottom) {
                         return;
                     }
 
-                    if (this.stageLeads[stage.sort_order].leads.meta.current_page == this.stageLeads[stage.sort_order].leads.meta.last_page) {
+                    if (this.stageLoadingMore[stageKey]) {
                         return;
                     }
+
+                    if (meta.current_page == meta.last_page) {
+                        return;
+                    }
+
+                    this.stageLoadingMore[stageKey] = true;
 
                     this.append({
                         pipeline_stage_id: stage.id,
                         pipeline_id: stage.lead_pipeline_id,
-                        page: this.stageLeads[stage.sort_order].leads.meta.current_page + 1,
+                        page: meta.current_page + 1,
                         limit: 10,
+                    }).finally(() => {
+                        this.stageLoadingMore[stageKey] = false;
                     });
                 },
 
